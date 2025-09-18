@@ -22,7 +22,7 @@ public class Queue<E>{/*by default {@code E extends Object} */
     private static class Node<E>{
         E item;
         Node<E> next;
-    }
+    }  
     Node<E> head;
     Node<E> tail;
     int size=0;/*number of items in queue*/

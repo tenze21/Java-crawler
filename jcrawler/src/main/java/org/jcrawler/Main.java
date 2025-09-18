@@ -4,6 +4,7 @@ import org.jcrawler.crawler.Crawler;
 import org.jcrawler.hashset.HashSet;
 import org.jcrawler.parser.Parser;
 import org.jcrawler.queue.Queue;
+import org.jsoup.nodes.Document;
 
 /**
  * Hello world!
@@ -14,7 +15,7 @@ public class Main {
         Declare a shared parser queue, frontier queue and hash set.
         */
         Queue<String> frontierQueue= new Queue<>();
-        Queue<String> parserQueue= new Queue<>();
+        Queue<Document> parserQueue= new Queue<>();
         HashSet hashSet= new HashSet();
 
         /*Insert seed urls*/

@@ -5,14 +5,14 @@ import java.io.UncheckedIOException;
 
 import org.jcrawler.hashset.HashSet;
 import org.jcrawler.queue.Queue;
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.helper.ValidationException;
+import org.jsoup.nodes.Document;
 
 public class Crawler implements Runnable {
 
-    Queue<String> frontierQueue = new Queue<>();
-    Queue<String> parserQueue = new Queue<>();
+    Queue<String> frontierQueue;
+    Queue<Document> parserQueue;
     HashSet hashSet = new HashSet();
 
     public Crawler(Queue fq, Queue pq, HashSet hs) {
@@ -27,12 +27,10 @@ public class Crawler implements Runnable {
             try {
                 String url = frontierQueue.take();
                 System.out.println("crawling: " + url);
-                // System.out.println(url);
-                Connection.Response res = Jsoup.connect(url).execute();
+                Document doc = Jsoup.connect(url).get();
                 hashSet.add(url);
-                String body = res.readBody();
-                parserQueue.put(body);
-                System.out.println("crawled: " + res.url() + " Status code: " + res.statusCode());
+                parserQueue.put(doc);
+                System.out.println("crawled: " + doc.location());
             } catch (UncheckedIOException | IOException e) {
                 System.err.println("IoException in crawler: " + e.getMessage());
             } catch (ValidationException e) {
