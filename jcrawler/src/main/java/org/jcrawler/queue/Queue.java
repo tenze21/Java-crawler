@@ -30,7 +30,7 @@ public class Queue<E>{/*by default {@code E extends Object} */
     Node<E> head;
     Node<E> tail;
     int size=0;/*number of items in queue*/
-    final int MAX_QUEUE_SIZE=300;/*defined the maximum number of items that can be stored in queue*/
+    final int MAX_QUEUE_SIZE=1000;/*defined the maximum number of items that can be stored in queue*/
 
     public synchronized void put(E item){/*add items at the end of the queue*/
         while(size == MAX_QUEUE_SIZE){/*Wait if queue is full*/
@@ -76,5 +76,9 @@ public class Queue<E>{/*by default {@code E extends Object} */
     }
     public int getSize(){/*return the size/number of items in queue*/
         return size;
+    }
+
+    public int availableCapacity(){
+        return MAX_QUEUE_SIZE - size;
     }
 }

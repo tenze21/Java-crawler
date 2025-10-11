@@ -1,17 +1,18 @@
 -- # ACTIVE TABLES
-CREATE TABLE crawler_data(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    token VARCHAR(30) NOT NULL UNIQUE,
-    url VARCHAR(100) NOT NULL
-);
+-- CREATE TABLE crawler_data(
+--     id INTEGER PRIMARY KEY AUTOINCREMENT,
+--     token VARCHAR(30) NOT NULL,
+--     url VARCHAR(100) NOT NULL,
+--     UNIQUE(token, url)
+-- );
 
-CREATE TABLE urls(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    url VARCHAR(100) NOT NULL UNIQUE,
-    response INT NOT NULL,
-    domain VARCHAR(50) NOT NULL,
-    crawled_on DATETIME DEFAULT CURRENT_TIMESTAMP 
-);
+-- CREATE TABLE urls(
+--     id INTEGER PRIMARY KEY AUTOINCREMENT,
+--     url VARCHAR(100) NOT NULL UNIQUE,
+--     response INT NOT NULL,
+--     domain VARCHAR(50) NOT NULL,
+--     crawled_on DATETIME DEFAULT CURRENT_TIMESTAMP 
+-- );
 
 -- # DRAFT TABLES
 -- CREATE TABLE tokens(
@@ -45,3 +46,5 @@ CREATE TABLE urls(
 -- SELECT * FROM tokens;
 -- DELETE FROM urls;
 -- DELETE FROM tokens;
+-- DELETE FROM crawler_data;
+-- SELECT url FROM crawler_data WHERE token="Footer";

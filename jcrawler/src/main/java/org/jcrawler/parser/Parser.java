@@ -45,6 +45,7 @@ public class Parser implements Runnable {
                         }
                     }
                 }
+                if(frontierQueue.availableCapacity() < links.size()) continue;
 
                 for (Element link : links) {
                     String linkHref = link.attr("abs:href");
@@ -55,7 +56,6 @@ public class Parser implements Runnable {
             } catch (SQLException e) {
                 System.err.println("SQL error(parser): " + e.getMessage());
             }
-                
         }
     }
 }

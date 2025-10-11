@@ -16,7 +16,7 @@ import org.jsoup.nodes.Document;
 public class Crawler implements Runnable {
     Queue<String> frontierQueue;
     Queue<Document> parserQueue;
-    HashSet hashSet = new HashSet();
+    HashSet hashSet;
 
     public Crawler(Queue fq, Queue pq, HashSet hs) {
         frontierQueue = fq;
