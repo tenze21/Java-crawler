@@ -22,6 +22,10 @@ public class Queue<E>{/*by default {@code E extends Object} */
     private static class Node<E>{
         E item;
         Node<E> next;
+        public Node(E item){
+            this.item=item;
+            this.next=null;
+        }
     }  
     Node<E> head;
     Node<E> tail;
@@ -36,9 +40,7 @@ public class Queue<E>{/*by default {@code E extends Object} */
                 Thread.currentThread().interrupt();
             }
         }
-        Node<E> node= new Node();
-        node.item=item;
-        node.next=null;
+        Node<E> node= new Node(item);
         if(head==null){
             head= node;
             tail= node;
