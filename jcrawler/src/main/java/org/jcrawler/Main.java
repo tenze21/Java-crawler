@@ -22,18 +22,18 @@ public class Main {
             System.err.println("usage error: No options passed. Use -h option to view program manual.");
             System.exit(1);/*terminate program*/
         }
-        if(args[0].equals("-s") || args[0].equals("-search")){/*run the search program*/
+        if(args[0].equals("-s") || args[0].equals("-search")){/*run the search programme*/
             try {
                 Scanner sc= new Scanner(System.in);
                 System.out.print("Enter keywords: ");
                 String input= sc.nextLine();
                 String[] keywords= input.trim().split("\\s+");
                 ArrayList urls= new ArrayList();
+                Db dbConnection= new Db();
+                String query= "SELECT url FROM crawler_data WHERE token=?";
+                PreparedStatement pstmt= dbConnection.con.prepareStatement(query);
                 for(String token: keywords){
-                    Db dbConnection= new Db();
-                    String query= "SELECT url FROM crawler_data WHERE token=?";
-                    PreparedStatement pstmt= dbConnection.con.prepareStatement(query);
-                    pstmt.setString(1, token);
+                    pstmt.setString(1, token.toLowerCase());
                     ResultSet rs=pstmt.executeQuery();
                     rs.next();
                     while(rs.next()){
@@ -41,10 +41,12 @@ public class Main {
                     }
                 }
                 /*sort the list of urls depending on the number of times they occur and print the sorted list of urls */
+                urls.sort();
+                urls.print();
             } catch (SQLException e) {
                 System.err.println("SQL error: " + e.getMessage());
             }
-        }else if(args[0].equals("-c") || args[0].equals("-crawl")){/*run the crawl program*/
+        }else if(args[0].equals("-c") || args[0].equals("-crawl")){/*run the crawl programme*/
             Scanner sc= new Scanner(System.in);
             System.out.print("Enter seed url(s): ");
             String input= sc.nextLine();
@@ -71,16 +73,14 @@ public class Main {
             Thread crawlerThread= new Thread(crawler);
             /*define a new parser object*/
             Parser parser= new Parser(frontierQueue, parserQueue, hashSet);
-            Thread parserCrawler= new Thread(parser);
+            Thread parserThread= new Thread(parser);
 
             /*start the crawler and parser threads*/
             crawlerThread.start();
-            parserCrawler.start();
+            parserThread.start();
         }else if(args[0].equals("-h") || args[0].equals("-help")){/*Show program instructions.*/
-            System.out.println("Jcrawler comes with two features: to crawl the web starting from the provided seed url(s) and to search for urls with sepcific keywords. You can choose whether to run the search program or the crawl program by passing the -s and -c options respectively.");
-            System.out.println("-s, -search: For running the search program. You will be prompted to enter a keyword you want to search for, not providing any keywords will throw an error. Seperate each keyword with a space e.g, Enter keywords: search this keyword");
-            System.out.println("-c, -crawl: For running the crawler program. You will be prompted to enter the seed urls, not providing any seed urls will result in an error. Seperate each seed url with a space e.g, Enter seed url(s): https://example1.com https://example2.com");
-            System.out.println("-h, -help: For viewing program instructions. Use if you are confused or not sure how to use jcrawler.");
+            String helpGuide="Jcrawler comes with two features: to crawl the web starting from the provided seed url(s) and to search for urls with sepcific keywords. You can choose whether to run the search program or the crawl program by passing the -s and -c options respectively.\n-s, -search: For running the search program. You will be prompted to enter a keyword you want to search for, not providing any keywords will throw an error. Seperate each keyword with a space e.g, Enter keywords: search this keyword\n-c, -crawl: For running the crawler program. You will be prompted to enter the seed urls, not providing any seed urls will result in an error. Seperate each seed url with a space e.g, Enter seed url(s): https://example1.com https://example2.com\n-h, -help: For viewing this help manual.";
+            System.out.println(helpGuide);
         }
     }
 }

@@ -12,7 +12,7 @@ public class IgnorableTokens {
         "those", "he", "she", "it", "they", "we", "you", "i", "me", "him", 
         "her", "them", "us", "my", "your", "his", "their", "our", "no", 
         "not", "so", "too", "very", "just", "only", "can", "will", "would", 
-        "should", "could", "may", "might", "must", "shall", "also", "see"
+        "should", "could", "may", "might", "must", "shall", "also", "see", "ohh", "wow", "hurray"
     };
 
     public static boolean includes(String item) {

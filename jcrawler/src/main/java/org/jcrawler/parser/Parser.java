@@ -38,13 +38,19 @@ public class Parser implements Runnable {
                     String h = header.text();
                     String[] tokens = h.split(" ");
                     for(String token: tokens){
-                        if(!IgnorableTokens.includes(token)){
-                            pstmt.setString(1, token);
+                        if(!IgnorableTokens.includes(token.toLowerCase())){
+                            pstmt.setString(1, token.toLowerCase());
                             pstmt.setString(2, doc.location());
                             pstmt.executeUpdate();
                         }
                     }
                 }
+
+                /*
+                    Dump all the links fetched from the current parsed page if all of them cannot fit into the frontier queue. 
+                    This ensures that the crawler and the parser donot get into a deadlock by preventing both the parser and 
+                    frontier queues from getting full at the same time.
+                */
                 if(frontierQueue.availableCapacity() < links.size()) continue;
 
                 for (Element link : links) {

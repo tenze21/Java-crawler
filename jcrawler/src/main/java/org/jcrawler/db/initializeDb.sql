@@ -41,7 +41,7 @@
 -- DROP TABLE urls;
 -- DROP TABLE token_url;
 
--- SELECT * FROM crawler_data;
+SELECT * FROM crawler_data;
 -- SELECT * FROM urls;
 -- SELECT * FROM tokens;
 -- DELETE FROM urls;
