@@ -136,7 +136,7 @@
     <profile>
       <id>development</id>
       <build>
-        <directory>/home/tenzin/Java-crawler/jcrawler/development/</directory>
+        <directory>/home/tenzin/design-patterns/Java-crawler/jcrawler/development/</directory>
       </build>
     </profile>
   </profiles>
