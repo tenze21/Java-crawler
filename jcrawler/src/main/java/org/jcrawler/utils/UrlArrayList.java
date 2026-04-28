@@ -1,5 +1,6 @@
-package org.jcrawler.arraylist;
-public class ArrayList{/*used for managing url containing user specified tokens.*/
+package org.jcrawler.utils;
+
+public class UrlArrayList{/*used for managing url containing user specified tokens.*/
     private static class URL{
         String url;
         int count;
@@ -10,7 +11,7 @@ public class ArrayList{/*used for managing url containing user specified tokens.
     }
 
     private URL[] urls= new URL[10];
-    int size=0;
+    public int size=0;
     private void grow(){
         int initialCapacity=urls.length;
         int additionalCapacity= initialCapacity / 2;
@@ -68,5 +69,9 @@ public class ArrayList{/*used for managing url containing user specified tokens.
         for(int i=0; i<size; i++){
             System.out.println(urls[i].url + "\t count: " + urls[i].count);
         }
+    }
+
+    public URL get(int idx){
+        return urls[idx];
     }
 }

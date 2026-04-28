@@ -2,12 +2,11 @@ package org.jcrawler.crawler;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import org.jcrawler.db.Db;
-import org.jcrawler.hashset.HashSet;
-import org.jcrawler.queue.Queue;
+import org.jcrawler.repository.UrlRepository;
+import org.jcrawler.utils.HashSet;
+import org.jcrawler.utils.Queue;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.helper.ValidationException;
@@ -17,11 +16,13 @@ public class Crawler implements Runnable {
     Queue<String> frontierQueue;
     Queue<Document> parserQueue;
     HashSet hashSet;
+    private final UrlRepository repository;
 
-    public Crawler(Queue fq, Queue pq, HashSet hs) {
-        frontierQueue = fq;
-        parserQueue = pq;
-        hashSet = hs;
+    public Crawler(Queue<String> fq, Queue<Document> pq, HashSet hs, UrlRepository repo) {
+        this.frontierQueue = fq;
+        this.parserQueue = pq;
+        this.hashSet = hs;
+        this.repository= repo;
     }
 
     @Override
@@ -38,14 +39,7 @@ public class Crawler implements Runnable {
                 parserQueue.put(doc);
                 System.out.println("crawled: " + doc.location() + " Status: " + statusCode);
 
-                // db interaction
-                Db dbConnection= new Db();
-                String insertQuery= "INSERT OR IGNORE INTO urls (url, response, domain) VALUES (?, ?, ?)";
-                PreparedStatement pstmt= dbConnection.con.prepareStatement(insertQuery);
-                pstmt.setString(1, url); //set url
-                pstmt.setInt(2, statusCode);//set response code
-                pstmt.setString(3, domain);//set domain
-                pstmt.executeUpdate();
+                repository.saveURL(url, statusCode, domain);
             } catch (UncheckedIOException | IOException e) {
                 System.err.println("IoException in crawler: " + e.getMessage());
             } catch (ValidationException e) {

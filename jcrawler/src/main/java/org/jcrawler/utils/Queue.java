@@ -1,4 +1,4 @@
-package org.jcrawler.queue;
+package org.jcrawler.utils;
 
 /*
 <p>The below implementation of the {@code Queue} class servers for producer consumer design, 
