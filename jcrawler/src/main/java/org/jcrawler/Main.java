@@ -35,7 +35,6 @@ public class Main {
                 for(String token: keywords){
                     pstmt.setString(1, token.toLowerCase());
                     ResultSet rs=pstmt.executeQuery();
-                    rs.next();
                     while(rs.next()){
                         urls.push(rs.getString(1));
                     }
