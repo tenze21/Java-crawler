@@ -125,21 +125,30 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>3.5.2</version>
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>shade</goal>
+                    </goals>
+                    <configuration>
+                        <transformers>
+                            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <!-- tells java which class has main() when running the jar -->
+                                <mainClass>org.jcrawler.Main</mainClass>
+                            </transformer>
+                        </transformers>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
   </build>
-  <profiles>
-    <profile>
-      <id>production</id>
-      <build>
-        <directory>/home/tenzin/Java-crawler/jcrawler/production/</directory>
-      </build>
-    </profile>
-    <profile>
-      <id>development</id>
-      <build>
-        <directory>/home/tenzin/design-patterns/Java-crawler/jcrawler/development/</directory>
-      </build>
-    </profile>
-  </profiles>
   <developers>
     <developer>
       <id>tenzin</id>
