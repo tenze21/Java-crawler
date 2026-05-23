@@ -1,4 +1,4 @@
-package org.jcrawler.hashset;
+package org.jcrawler.utils;
 
 public class HashSet{
     private final int HASH_SIZE= 100;

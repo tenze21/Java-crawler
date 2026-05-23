@@ -1,26 +1,30 @@
 package org.jcrawler.parser;
 
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import org.jcrawler.db.Db;
-import org.jcrawler.hashset.HashSet;
-import org.jcrawler.queue.Queue;
+import org.jcrawler.repository.TokenRepository;
+import org.jcrawler.tokenization.TokenizationStrategy;
+import org.jcrawler.utils.HashSet;
 import org.jcrawler.utils.IgnorableTokens;
+import org.jcrawler.utils.Queue;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public class Parser implements Runnable {
-
     Queue<String> frontierQueue;
     Queue<Document> parserQueue;
     HashSet hashSet = new HashSet();
+    private final TokenRepository repository;
+    private final TokenizationStrategy tokenizationStrategy;
 
-    public Parser(Queue fq, Queue pq, HashSet hs) {
-        frontierQueue = fq;
-        parserQueue = pq;
-        hashSet = hs;
+    public Parser(Queue<String> fq, Queue<Document> pq, HashSet hs, TokenRepository repo,
+            TokenizationStrategy tokenizationStrategy) {
+        this.frontierQueue = fq;
+        this.parserQueue = pq;
+        this.hashSet = hs;
+        this.repository = repo;
+        this.tokenizationStrategy = tokenizationStrategy;
     }
 
     @Override
@@ -29,33 +33,26 @@ public class Parser implements Runnable {
             try {
                 Document doc = parserQueue.take();
                 Elements links = doc.select("a");
-                Elements headers = doc.select("h1, h2, h3");
-                Db dbConnection= new Db();
-                String insertQuery= "INSERT OR IGNORE INTO crawler_data (token, url) VALUES (?, ?)";
-                PreparedStatement pstmt= dbConnection.con.prepareStatement(insertQuery);
 
-                for (Element header : headers) {
-                    String h = header.text();
-                    String[] tokens = h.split(" ");
-                    for(String token: tokens){
-                        if(!IgnorableTokens.includes(token.toLowerCase())){
-                            pstmt.setString(1, token.toLowerCase());
-                            pstmt.setString(2, doc.location());
-                            pstmt.executeUpdate();
-                        }
+                for (String token : tokenizationStrategy.tokenize(doc)) {
+                    if (!IgnorableTokens.includes(token.toLowerCase())) {
+                        repository.saveToken(token, doc.location());
                     }
                 }
-
-                /*
-                    Dump all the links fetched from the current parsed page if all of them cannot fit into the frontier queue. 
-                    This ensures that the crawler and the parser donot get into a deadlock by preventing both the parser and 
-                    frontier queues from getting full at the same time.
-                */
-                if(frontierQueue.availableCapacity() < links.size()) continue;
+                /**
+                 * @dev Dump all the links fetched from the current parsed page if all of them
+                 *      cannot fit into the frontier queue.
+                 *      This ensures that the crawler and the parser donot get into a deadlock
+                 *      by preventing both the parser and
+                 *      frontier queues from getting full at the same time.
+                 */
+                if (frontierQueue.availableCapacity() < links.size())
+                    continue;
 
                 for (Element link : links) {
                     String linkHref = link.attr("abs:href");
-                    if (!(hashSet.contains(linkHref)) && !(linkHref.equals(" ") || linkHref.equals("")) && (linkHref.startsWith("http://") || linkHref.startsWith("https://"))) {
+                    if (!(hashSet.contains(linkHref)) && !(linkHref.equals(" ") || linkHref.equals(""))
+                            && (linkHref.startsWith("http://") || linkHref.startsWith("https://"))) {
                         frontierQueue.put(linkHref);
                     }
                 }
